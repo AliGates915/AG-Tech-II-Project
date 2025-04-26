@@ -105,6 +105,7 @@ export default function AuthPage() {
             {/* Username Field */}
             <div>
               <div className="relative flex items-center">
+                {/* Email field: accepts and validates email address format */}
                 <input
                   type="email"
                   placeholder="Email"
