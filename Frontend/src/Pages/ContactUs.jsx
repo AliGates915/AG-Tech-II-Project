@@ -48,9 +48,9 @@ const ContactForm = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full flex bg-gray-50 p-4 sm:p-6">
-        <div className="container mx-auto max-w-[1440px] w-full">
-          <div className="h-[480px] grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-8 md:gap-12 p-4 sm:p-6 md:p-8 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
+      <div className="w-full flex bg-gray-50 p-4 sm:p-6 dark:bg-slate-900 ">
+        <div className=" dark:bg-slate-900 container mx-auto max-w-[1440px] w-full">
+          <div className="dark:bg-slate-900 dark:text-slate-300  h-[480px] grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-8 md:gap-12 p-4 sm:p-6 md:p-8 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
             <div>
               <h1 className="text-[#2563EB] text-4xl sm:text-3xl font-semibold">Let's Talk</h1>
               <p className="text-lg sm:text-sm text-slate-500 mt-2 sm:mt-4 leading-relaxed">
@@ -58,7 +58,7 @@ const ContactForm = () => {
               </p>
 
               <div className="mt-8 sm:mt-12">
-                <h2 className="text-slate-900 text-sm sm:text-base font-semibold">Email</h2>
+                <h2 className="text-slate-900 text-sm sm:text-base font-semibold dark:text-white">Email</h2>
                 <ul className="mt-2 sm:mt-4">
                   <li className="flex items-center">
                     <div className="bg-[#e6e6e6cf] h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center shrink-0">
@@ -69,8 +69,8 @@ const ContactForm = () => {
                       </svg>
                     </div>
                     <a href="mailto:hacktech877@gmail.com" className="text-xs sm:text-sm ml-3 sm:ml-4">
-                      <small className="block text-slate-900">Mail</small>
-                      <span className="text-blue-600 font-medium">hacktech877@gmail.com</span>
+                      <small className="block text-slate-900 dark:text-white">Mail</small>
+                      <span className="text-blue-600 font-medium dark:text-white">hacktech877@gmail.com</span>
                     </a>
                   </li>
                 </ul>
@@ -126,28 +126,28 @@ const ContactForm = () => {
                 type="text"
                 name="user_name"
                 placeholder="Name"
-                className="w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className=" dark:bg-slate-500 dark:text-white dark:placeholder-gray-100 w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
               <input
                 type="email"
                 name="user_email"
                 placeholder="Email"
-                className="w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="dark:bg-slate-500 dark:text-white dark:placeholder-gray-100 w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
               <input
                 type="text"
                 name="subject"
                 placeholder="Subject"
-                className="w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="dark:bg-slate-500 dark:text-white dark:placeholder-gray-100 w-full text-slate-900 rounded-md py-2 sm:py-2.5 px-3 sm:px-4 border text-xs sm:text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
               <textarea
                 name="message"
                 placeholder="Message"
                 rows="5"
-                className="w-full text-slate-900 rounded-md px-3 sm:px-4 border text-xs sm:text-sm pt-2 sm:pt-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="dark:bg-slate-500 dark:text-white dark:placeholder-gray-100 w-full text-slate-900 rounded-md px-3 sm:px-4 border text-xs sm:text-sm pt-2 sm:pt-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 required
               />
               <button

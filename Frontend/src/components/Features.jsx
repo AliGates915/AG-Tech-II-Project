@@ -27,7 +27,7 @@ const Features = () => {
         {uploads.map((upload) => (
           <div
             key={upload.id}
-            className=" bg-gray-100 p-4 shadow-lg shadow-gray-400 rounded-xl relative flex flex-col items-center text-center transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl cursor-pointer"
+            className=" dark:bg-slate-900 dark:text-white bg-gray-100 p-4 shadow-lg shadow-gray-400 rounded-xl relative flex flex-col items-center text-center transition-all duration-300 ease-out hover:scale-105 hover:shadow-2xl cursor-pointer"
           >
             <img
               src={upload.image}

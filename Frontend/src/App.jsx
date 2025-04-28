@@ -28,7 +28,7 @@ const Layout = () => {
   const shouldShowFooter = location.pathname !== "/contact-us" && !hiddenRoutes.includes(location.pathname);
 
   return (
-    <>
+    <div className="dark:bg-slate-900">
       {shouldShowNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -41,7 +41,7 @@ const Layout = () => {
         <Route path="/contact-us" element={<ContactUs />} />
       </Routes>
       {shouldShowFooter && <Footer />}
-    </>
+    </div>
   );
 };
 

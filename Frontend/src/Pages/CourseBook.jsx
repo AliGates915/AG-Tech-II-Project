@@ -17,7 +17,7 @@ const CourseBook = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-white">
+      <div className="h-screen flex items-center justify-center bg-white dark:bg-slate-900">
         <ClimbingBoxLoader color="#2563EB" loading={true} size={15} />
       </div>
     );
@@ -52,7 +52,7 @@ function Navbar() {
 
 function SearchContents() {
   return (
-    <div className="bg-[#D5E3FC]">
+    <div className="bg-[#D5E3FC] dark:bg-slate-300">
       <br />
       <div
         className="text-3xl sm:text-4xl md:text-5xl font-bold text-black flex items-center justify-center px-2 text-center"
@@ -90,7 +90,7 @@ function SearchContents() {
           <input
             type="search"
             id="default-search"
-            className="block w-full p-4 pl-10 md:pr-28 pr-20 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[#D5E4]"
+            className="dark:bg-slate-400 dark:text-white dark:placeholder-gray-100 block w-full p-4 pl-10 md:pr-28 pr-20 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[#D5E4]"
             placeholder="Search for books..."
             required
           />
@@ -155,14 +155,14 @@ function BookContents() {
 
   return (
     <div className=" mx-auto p-4 ml-8 mr-8">
-      <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold my-3 sm:my-4 md:my-6 px-2">
+      <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold my-3 sm:my-4 md:my-6 px-2 dark:text-white">
         Search: Result Past Paper: Discrete Mathematics 3rd Semester Course Code GE-167
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
         {uploads.map((upload) => (
           <div
             key={upload.id}
-            className="bg-gray-100 p-2 sm:p-3 md:p-4 shadow-md sm:shadow-lg shadow-gray-300 sm:shadow-gray-400 rounded-lg sm:rounded-xl relative flex flex-col items-center text-center transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl cursor-pointer"
+            className="dark:bg-slate-900 dark:text-white bg-gray-100 p-2 sm:p-3 md:p-4 shadow-md sm:shadow-lg shadow-gray-300 sm:shadow-gray-400 rounded-lg sm:rounded-xl relative flex flex-col items-center text-center transition-all duration-300 ease-out hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl cursor-pointer"
           >
             <img
               src={upload.image}

@@ -18,7 +18,7 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-white">
+      <div className="h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <ClimbingBoxLoader color="#2563EB" loading={true} size={15} />
       </div>
     );
@@ -28,14 +28,14 @@ const Home = () => {
     <>
       <div>
         <div
-          className="h-screen flex flex-col items-center justify-center bg-cover bg-center relative pt-20 px-4"
+          className="h-screen flex flex-col items-center justify-center bg-cover bg-center relative pt-20 px-4 dark:bg-slate-900"
           style={{ backgroundImage: "url('/Images/hero.jpg')" }}
         >
           {/* Overlay */}
           <div className="absolute inset-0 bg-blue-100/20"></div>
 
           {/* Main Content */}
-          <div className="relative z-10 text-center text-white w-full max-w-4xl">
+          <div className="relative z-10 text-center text-white w-full max-w-4xl ">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-medium mb-10 leading-tight [text-shadow:_0_4px_4px_rgb(0_0_0_/2)]">
               Get Free University Past Papers & Tech Guidance
             </h1>
@@ -46,7 +46,7 @@ const Home = () => {
                 <input
                   type="text"
                   placeholder="Search Past Papers & Tech Guidance..."
-                  className="w-full p-4 pr-12 rounded-full bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-0"
+                  className="dark:bg-slate-400 dark:text-white dark:placeholder-gray-100 w-full p-4 pr-12 rounded-full bg-white text-black placeholder-gray-500 focus:outline-none focus:ring-0"
                 />
                 <button className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#2563EB] p-3 rounded-full hover:bg-blue-700">
                   <img
@@ -70,7 +70,7 @@ const Home = () => {
 
         </div>
       </div>
-      <RecentUploads />
+      <RecentUploads   />
       <Features />
     </>
   );
