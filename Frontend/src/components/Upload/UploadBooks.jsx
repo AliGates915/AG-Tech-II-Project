@@ -42,97 +42,31 @@ function UploadBooks() {
         toast.info("Uploading book, please wait... 📚");
         setIsUploading(true);
     
-        let thumbnail;
         try {
-            const uploadedFileUrls = [];
+            const formData = new FormData();
+            formData.append("file", selectedFile[0]);  // Changed to "file"
+            formData.append("bookName", bookName);
+            formData.append("authorName", authorName);
+            formData.append("relatedCourseName", courseBook);
     
-            for (const file of selectedFile) {
-                let uploadRes;
+            const response = await axios.post("http://localhost:8000/api/books", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                    const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setProgressPercent(percent);
+                },
+            });
     
-                if (file.size <= 10 * 1024 * 1024) {
-                    // 🔹 Small files (<=10MB) — regular upload
-                    const data = new FormData();
-                    data.append("file", file);
-                    data.append("upload_preset", "upload");
-    
-                    const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
-                    uploadRes = await axios.post(uploadUrl, data);
-
-                    uploadRes = await axios.post(uploadUrl, data, {
-                        onUploadProgress: (progressEvent) => {
-                            const percent = Math.round(
-                                (progressEvent.loaded * 100) / progressEvent.total
-                            );
-                            setProgressPercent(percent);
-                            console.log(`Uploading ${file.name}: ${percent}%`);
-                        },
-                    });
+            console.log("Upload response:", response.data);
             
-                } else{
-                    // 🔸 Large files (>10MB) — chunked upload
-                    const chunkSize = 10 * 1024 * 1024; // 10MB
-                    const totalChunks = Math.ceil(file.size / chunkSize);
-                    const uniqueId = Date.now().toString(); // unique session id
-                    const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/video/upload";
-    
-                    let result = null;
-    
-                    for (let i = 0; i < totalChunks; i++) {
-                        const start = i * chunkSize;
-                        const end = Math.min(file.size, (i + 1) * chunkSize);
-                        const chunk = file.slice(start, end);
-    
-                        const formData = new FormData();
-                        formData.append("file", chunk);
-                        formData.append("upload_preset", "upload");
-    
-                        const headers = {
-                            "Content-Range": `bytes ${start}-${end - 1}/${file.size}`,
-                            "X-Unique-Upload-Id": uniqueId,
-                        };
-    
-                        const res = await axios.post(uploadUrl, formData, { 
-                            headers,
-                            onUploadProgress: (progressEvent) => {
-                                const totalLoaded = (i * chunkSize) + progressEvent.loaded;
-                                const percent = Math.round((totalLoaded / file.size) * 100);
-                                setProgressPercent(percent);
-                                console.log(`Uploading chunk ${i + 1}/${totalChunks} (${percent}%)`);
-                            },
-                        });
-                        result = res; // Only the last chunk response contains the final file URL
-                    }
-    
-                    uploadRes = result;
-                }
-    
-                const fileUrl = uploadRes.data.secure_url;
-                uploadedFileUrls.push(fileUrl);
-    
-                // Thumbnail
-                const fileId = fileUrl.split('/upload/')[1].replace('.pdf', '');
-                thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
-            }
-    
-            console.log("Thumbnail URL:", thumbnail);
-            console.log("All file URLs:", uploadedFileUrls);
-    
-            const payload = {
-                bookName,
-                authorName,
-                relatedCourseName: courseBook,
-                bookUpload: uploadedFileUrls,
-                bookThumbnail: thumbnail,
-            };
-    
-            console.log("Data Sent to the backend :", payload);
-            await axios.post("http://localhost:8000/api/books", payload);
-    
             toast.success("Book uploaded successfully! ✅");
             setAuthorName("");
             setBookName("");
-            // setCourse("");
+            setCourseBook("");
             setSelectedFile([]);
+    
         } catch (err) {
             console.error("Upload error:", err);
             toast.error("Error uploading book");

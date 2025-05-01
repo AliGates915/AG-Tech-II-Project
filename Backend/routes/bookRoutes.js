@@ -1,28 +1,23 @@
-const express = require('express');
-
-const { 
+import express from 'express';
+import upload from '../utils/fileUpload.js';
+import {
   uploadBook,
   getAllBooks,
   getSingleBook,
   updateBook,
   deleteBook
-}  = require('../controllers/bookController.js');
+} from '../controllers/bookController.js';
 
 const router = express.Router();
 
-// Create a Book
-router.post('/', uploadBook);
-
-// Get all Books
+router.post('/', upload.single('file'), (req, res, next) => {
+  console.log('Received file:', req.file);
+  console.log('Body:', req.body);
+  next();
+}, uploadBook);
 router.get('/', getAllBooks);
-
-// Get a Single Book by ID
 router.get('/:id', getSingleBook);
-
-// Update a Book by ID
 router.put('/:id', updateBook);
-
-// Delete a Book by ID
 router.delete('/:id', deleteBook);
 
-module.exports = router;
+export default router;

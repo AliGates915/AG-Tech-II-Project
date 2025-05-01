@@ -13,12 +13,12 @@ const bookSchema = new mongoose.Schema({
     type: String,
   },
   bookUpload: {
-    type: [String], // Array of Cloudinary URLs
+    type: String, // Array of Cloudinary URLs
     required: [true, 'At least one paper must be uploaded'],
   },
   bookThumbnail: {
     type: String, // Array of Cloudinary URLs
-    required: [true, 'At least one paper must be uploaded'],
+  
   },
 }, { timestamps: true });
 
