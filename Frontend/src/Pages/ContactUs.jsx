@@ -50,7 +50,7 @@ const ContactForm = () => {
       <Navbar />
       <div className="w-full flex bg-gray-50 p-4 sm:p-6">
         <div className="container mx-auto max-w-[1440px] w-full">
-          <div className="h-[480px] grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-8 md:gap-12 p-4 sm:p-6 md:p-8 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md">
+          <div className="min-h-screen grid grid-cols-1 sm:grid-cols-2 items-start gap-6 sm:gap-8 md:gap-12 p-4 sm:p-6 md:p-8 bg-white shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] rounded-md overflow-auto"> {/*Added min-h-screen and overflow-auto*/}
             <div>
               <h1 className="text-[#2563EB] text-4xl sm:text-3xl font-semibold">Let's Talk</h1>
               <p className="text-lg sm:text-sm text-slate-500 mt-2 sm:mt-4 leading-relaxed">
