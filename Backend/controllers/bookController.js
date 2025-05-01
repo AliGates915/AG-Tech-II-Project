@@ -1,42 +1,73 @@
 import bookModel from '../models/Books.js';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
 
-// Create a Book
 export const uploadBook = async (req, res) => {
   try {
+    const { bookName, authorName, relatedCourseName } = req.body;
+    const file = req.file;
 
-    const { bookName, authorName, relatedCourseName, bookUpload, bookThumbnail} = req.body;
-    console.log("Request sent to the past paper: ",req.body);
-
-    if (!bookName || !authorName || !relatedCourseName || !bookThumbnail || !bookUpload || bookUpload.length === 0) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'Please provide all required fields!',
-      });
+    if (!file || !bookName || !authorName || !relatedCourseName) {
+      return res.status(400).json({ message: 'All fields are required!' });
     }
+
+    const fileUrl = `/uploads/books/${file.filename}`;
+    console.log("File URL:", fileUrl);
+
     const newBook = await bookModel.create({
-        bookName,
-        authorName,
-        relatedCourseName,
-        bookThumbnail,
-        bookUpload,
-      });
-  
-      res.status(201).json({
-        status: 'success',
-        message: 'Book Uploaded Successfully!',
-        data: newBook,
-      });
+      bookName,
+      authorName,
+      relatedCourseName,
+      bookUpload: fileUrl,
+      bookThumbnail: "",
+    });
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Book Uploaded Successfully!',
+      data: newBook,
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('File upload error:', error);
+    res.status(500).json({ message: error.message });
   }
 };
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 // Get All Books
 export const getAllBooks = async (req, res) => {
   try {
     const books = await bookModel.find();
-    res.status(200).json(books);
+
+    // Base URL: change this to match your actual server + port
+    const serverUrl = `${req.protocol}://${req.get('host')}`;
+
+    // Update bookUpload field to contain the full URL for the PDFs
+    const updatedBooks = books.map(book => {
+      // Ensure book.bookUpload is an array (if not, convert it to an array)
+      const bookUploads = Array.isArray(book.bookUpload) ? book.bookUpload : [book.bookUpload];
+
+      const pdfUrls = bookUploads.map(filePath => {
+        // Concatenate base URL with file path
+        return `${serverUrl}${filePath}`;
+      });
+
+      return {
+        ...book._doc,
+        bookUpload: pdfUrls
+      };
+    });
+
+    res.status(200).json({
+      status: 'success',
+      results: updatedBooks.length,
+      data: updatedBooks
+    });
   } catch (error) {
+    console.error('Error fetching books:', error);
     res.status(500).json({ message: error.message });
   }
 };
