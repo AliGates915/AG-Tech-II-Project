@@ -5,7 +5,8 @@ import {
   getAllBooks,
   getSingleBook,
   updateBook,
-  deleteBook
+  deleteBook,
+  getRecentBooks,
 } from '../controllers/bookController.js';
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.post('/', upload.single('file'), (req, res, next) => {
   next();
 }, uploadBook);
 router.get('/', getAllBooks);
+router.get('/recent',getRecentBooks)
 router.get('/:id', getSingleBook);
 router.put('/:id', updateBook);
 router.delete('/:id', deleteBook);

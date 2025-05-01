@@ -110,3 +110,34 @@ export const deleteBook = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+//Get recently uploaded books
+
+export const getRecentBooks= async(req,res)=>{
+  try{
+    const limit = parseInt(req.query.limit) || 8;  //fetch latest 8 by default
+    const recentBooks = await bookModel.find().sort({createdAt:-1}).limit(limit)
+
+    const serverUrl = `${req.protocol}://${req.get('host')}`;
+    const updatedBooks = recentBooks.map(book=>{
+      const bookUploads = Array.isArray(book.bookUpload) ? book.bookUpload : [book.bookUpload];
+      const pdfUrls = bookUploads.map(filePath=> `${serverUrl}${filePath}`);
+      return{
+        ...book._doc,
+        bookUpload:pdfUrls
+      }
+    })
+
+    res.status(200).json({
+      status:"success",
+      results:updatedBooks.length,
+      data:updatedBooks
+    })
+
+
+  }catch(error){
+    console.error("Error fetching recent books",error);
+    res.send(500).json({message:error.message})
+  }
+}
