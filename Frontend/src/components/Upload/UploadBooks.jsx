@@ -41,14 +41,13 @@ function UploadBooks() {
     
         toast.info("Uploading book, please wait... 📚");
         setIsUploading(true);
-    
         try {
             const formData = new FormData();
             formData.append("file", selectedFile[0]);  // Changed to "file"
             formData.append("bookName", bookName);
             formData.append("authorName", authorName);
             formData.append("relatedCourseName", courseBook);
-    
+
             const response = await axios.post("http://localhost:8000/api/books", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -58,15 +57,14 @@ function UploadBooks() {
                     setProgressPercent(percent);
                 },
             });
-    
-            console.log("Upload response:", response.data);
-            
+
+            console.log("Upload response:", response.data);  
             toast.success("Book uploaded successfully! ✅");
             setAuthorName("");
             setBookName("");
             setCourseBook("");
             setSelectedFile([]);
-    
+
         } catch (err) {
             console.error("Upload error:", err);
             toast.error("Error uploading book");
@@ -74,6 +72,7 @@ function UploadBooks() {
             setIsUploading(false);
         }
     };
+    
     
 
     return (

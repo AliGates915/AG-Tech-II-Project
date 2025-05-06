@@ -71,7 +71,7 @@ export const getAllBooks = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
+	
 // Get Single Book by ID
 export const getSingleBook = async (req, res) => {
   try {
