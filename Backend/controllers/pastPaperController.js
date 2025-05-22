@@ -150,7 +150,7 @@ export const deletePastPaper = async (req, res) => {
 // Get recently uploaded past papers
 export const getRecentPapers = async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit) || 6;  // fetch latest 8 by default
+    const limit = parseInt(req.query.limit) || 6;  // fetch latest 6 by default
     const recentPapers = await PastPaper.find().sort({ createdAt: -1 }).limit(limit);
 
     res.status(200).json({
@@ -164,3 +164,38 @@ export const getRecentPapers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// SEARCH
+export const searchPastPapers = async (req, res) => {
+  try {
+    const { subjectName, courseCode, year } = req.query;
+
+    // Build dynamic filter
+    let query = {};
+    if (subjectName) {
+      query.subjectName = { $regex: new RegExp(subjectName, 'i') }; // case-insensitive
+    }
+    if (courseCode) {
+      query.courseCode = { $regex: new RegExp(courseCode, 'i') };
+    }
+    if (year) {
+      query.year = { $regex: new RegExp(year, 'i') };
+    }
+
+    const results = await PastPaper.find(query).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      status: 'success',
+      results: results.length,
+      data: results,
+    });
+
+  } catch (error) {
+    console.error('Error searching past papers:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Something went wrong during search!',
+    });
+  }
+};
+

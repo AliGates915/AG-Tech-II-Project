@@ -18,11 +18,13 @@ app.use(
   cors({
     origin: [
       'http://localhost:5173',
+      'https://ag-tech-ii-project.vercel.app', // ✅ No trailing slash
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
   })
 );
+
 // Test route
 app.get('/', (req, res) => {
   res.send('Server running!');

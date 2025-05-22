@@ -1,20 +1,53 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import UploadCards from "../components/UploadCards";
 import { ClimbingBoxLoader } from "react-spinners";
 
-import UploadCards from "../components/UploadCards";
-import axios from "axios";
 const PastPapers = () => {
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [uploads, setUploads] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
-    // Show loader for 2 seconds
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  const fetchPapers = async (query = "") => {
+    try {
+      const url = query
+        ? `https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers/search?subjectName=${query}`
+        : `https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers`;
+      const res = await axios.get(url);
+      setUploads(res.data.data);
+      setCurrentPage(1);
+    } catch (err) {
+      console.error("Error fetching papers:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchPapers(); // fetch all papers initially
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const trimmedQuery = searchQuery.trim();
+    setIsSearched(trimmedQuery.length > 0);
+    fetchPapers(trimmedQuery);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentUploads = uploads.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(uploads.length / itemsPerPage);
+
+  const goToNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const goToPrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
   if (loading) {
     return (
@@ -26,31 +59,53 @@ const PastPapers = () => {
 
   return (
     <>
-      <div>
-        <Navbar />
+      <div className="bg-[#2563EB] h-18 "></div>
+
+      <Searchcontents
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
+
+      <div className="mx-auto p-6 max-w-7xl">
+        {isSearched && (
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold my-3 px-2">
+            Search Result {uploads.length} Past Paper:{" "}
+            <span className="text-blue-600">{searchQuery}</span>  
+        </h2>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10">
+          {currentUploads.map((upload) => (
+            <UploadCards key={upload._id} upload={upload} />
+          ))}
+        </div>
+
+        <div className="flex justify-center items-center gap-4 mt-8">
+          <button
+            onClick={goToPrevPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
+          >
+            Previous
+          </button>
+          <span className="font-semibold">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
+          >
+            Next
+          </button>
+        </div>
       </div>
-      <div>
-        <Searchcontents />
-      </div>
-      <div>
-        <Papercontents />
-      </div>
-      <br />
     </>
   );
 };
 
-function Navbar() {
-  return (
-    <div className="bg-[#2563EB]">
-      <br></br>
-      <br></br>
-      <br></br>
-    </div>
-  );
-}
-
-function Searchcontents() {
+function Searchcontents({ searchQuery, setSearchQuery, handleSearch }) {
   return (
     <div className="bg-[#D5E3FC]">
       <br />
@@ -62,7 +117,10 @@ function Searchcontents() {
       </div>
 
       {/* Search Field */}
-      <div className="flex flex-wrap items-end justify-around gap-4 p-4 rounded-lg shadow-md">
+      <form
+        onSubmit={handleSearch}
+        className="flex flex-wrap items-end justify-around gap-4 p-4 rounded-lg shadow-md"
+      >
         <div className="relative w-full md:mx-8 mx-4">
           <label
             htmlFor="default-search"
@@ -70,7 +128,7 @@ function Searchcontents() {
           >
             Search
           </label>
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
             <svg
               className="w-4 h-4 text-[#2563EB]"
               aria-hidden="true"
@@ -90,9 +148,10 @@ function Searchcontents() {
           <input
             type="search"
             id="default-search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="block w-full p-4 pl-10 md:pr-28 pr-20 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-[#D5E4]"
             placeholder="Discrete Mathematics 3rd Semester"
-            required
           />
           <button
             type="submit"
@@ -101,82 +160,7 @@ function Searchcontents() {
             Search
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Papercontents() {
-  const [uploads, setUploads] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
-
-  // Fetch data from backend
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/pastPapers");
-        console.log("Fetched Data:", res.data);
-        setUploads(res.data.data); // Make sure data is an array
-      } catch (error) {
-        console.error("Error fetching papers:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  const totalPages = Array.isArray(uploads)
-    ? Math.ceil(uploads.length / itemsPerPage)
-    : 0;
-
-  const goToNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
-
-  const goToPrevPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const currentUploads = Array.isArray(uploads)
-    ? uploads.slice(indexOfFirstItem, indexOfLastItem)
-    : [];
-
-  return (
-    <div className="mx-auto p-6 max-w-7xl">
-      <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold my-3 sm:my-4 md:my-6 px-2">
-        Search Result Past Paper: Discrete Mathematics 3rd Semester Course Code
-        GE-167
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-10">
-        {currentUploads.map((upload) => (
-          <UploadCards key={upload._id || upload.id} upload={upload} />
-        ))}
-      </div>
-      <div className="flex justify-center items-center gap-4 mt-8">
-        <button
-          onClick={goToPrevPage}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
-        >
-          Previous
-        </button>
-
-        <span className="font-semibold">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        <button
-          onClick={goToNextPage}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-blue-600 text-white rounded disabled:bg-gray-400"
-        >
-          Next
-        </button>
-      </div>
+      </form>
     </div>
   );
 }

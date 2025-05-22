@@ -5,7 +5,8 @@ import {
   getSinglePastPaper,
   updatePastPaper,
   deletePastPaper,
-  getRecentPapers
+  getRecentPapers,
+   searchPastPapers 
 } from '../controllers/pastPaperController.js';
 
 const router = express.Router();
@@ -15,6 +16,7 @@ const router = express.Router();
 router.post('/', uploadPastPaper);
 router.get('/', getAllPastPapers);
 router.get('/recent', getRecentPapers);
+router.get('/search', searchPastPapers);
 router.get('/:id', getSinglePastPaper);
 router.put('/:id', updatePastPaper);
 router.delete('/:id', deletePastPaper);
