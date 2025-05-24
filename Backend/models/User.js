@@ -1,4 +1,7 @@
-import { Schema, model } from 'mongoose';
+console.log('User Schema defined');
+console.log('Pre-save hook to hash the password is set');
+console.log('Method to compare password is added');
+console.log('User model created and exported');import { Schema, model } from 'mongoose';
 import { hash, compare } from 'bcryptjs';
 
 // Define User Schema
