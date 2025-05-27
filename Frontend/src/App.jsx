@@ -17,6 +17,7 @@ import Login from "./components/Login";
 import SignUpPage from "./components/SignUpPage";
 import Footer from "./components/Footer";
 import UploadPaper from "./Pages/UploadPaper";
+import NotFound from "./Pages/NotFound";
 
 const Layout = () => {
   const location = useLocation();
@@ -39,6 +40,7 @@ const Layout = () => {
         <Route path="/course-book" element={<CourseBook />} />
         <Route path="/tech-guidance" element={<TechGuidance />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       {shouldShowFooter && <Footer />}
     </>
