@@ -56,6 +56,7 @@ Thanks to these amazing people for their contributions:
 |  9  | <img src="https://avatars.githubusercontent.com/u/157229547?v=4" width="50px;" /> | [@royalsrivastavagithub](https://github.com/royalsrivastavagithub) |  Fix issue #54 |
 |  10 | <img src="https://avatars.githubusercontent.com/u/101133391?v=4" width="50px;" /> | [@Vandana-Ss](https://github.com/Vandana-Ss) |  Fixes Multiple Issues & Add New Features |
 |  11 | <img src="https://avatars.githubusercontent.com/u/165892389?v=4" width="50px;" /> | [@viraj-gavade](https://github.com/viraj-gavade) |  Sign up Connect with Backend |
+|  12 | <img src="https://avatars.githubusercontent.com/u/61693361?v=4" width="50px;" /> | [@vijay2904](https://github.com/vijay2904) | Built the Not Found page |
 
 > Want to be featured here? Contribute to the project and submit a PR or join discussions in Issues!
 
