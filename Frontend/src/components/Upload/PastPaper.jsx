@@ -34,87 +34,76 @@ function Paper() {
         );
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        if (!subject.trim() || !code.trim() || !year.trim() || !universityName.trim() || !paperUnsolved.trim()) {
-            toast.error("Please fill all required fields (*)");
-            return;
+    if (!subject.trim() || !code.trim() || !year.trim() || !universityName.trim() || !paperUnsolved.trim()) {
+        toast.error("Please fill all required fields (*)");
+        return;
+    }
+
+    if (!selectedFiles || selectedFiles.length === 0) {
+        toast.error("Please upload paper(s) (PDF or image).");
+        return;
+    }
+
+    if (isNaN(year)) {
+        toast.error("Year must be numbers only!");
+        return;
+    }
+
+    if (subject[0] !== subject[0].toUpperCase()) {
+        toast.error("Subject name must start with a capital letter.");
+        return;
+    }
+
+    const validStatuses = ["Solved", "Unsolved"];
+    if (!validStatuses.includes(paperUnsolved)) {
+        toast.error("Paper status must be either 'Solved' or 'Unsolved' (case-sensitive).");
+        return;
+    }
+
+    setIsUploading(true);
+    let thumbnail;
+
+    try {
+        const uploadedFileUrls = [];
+
+        for (const file of selectedFiles) {
+            const data = new FormData();
+            data.append("file", file);
+            data.append("upload_preset", "upload");
+
+            const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
+            const uploadRes = await axios.post(uploadUrl, data);
+            const fileUrl = uploadRes.data.secure_url;
+            uploadedFileUrls.push(fileUrl);
         }
 
-        if (!selectedFiles || selectedFiles.length === 0) {
-            toast.error("Please upload paper(s) (PDF or image).");
-            return;
-        }
+        // ✅ Fix applied here
+        const fileId = uploadedFileUrls[0].split('/upload/')[1].replace(/\.(pdf|mp4|jpg|png)$/, '');
+        thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
 
-        if (isNaN(year)) {
-            toast.error("Year must be numbers only!");
-            return;
-        }
+        const payload = {
+            subjectName: subject,
+            courseCode: code,
+            year,
+            paperUnsolved,
+            universityName,
+            paperUpload: uploadedFileUrls,
+            paperThumbnail: thumbnail,
+        };
 
-        // ✅ Capitalization check
-        if (subject[0] !== subject[0].toUpperCase()) {
-            toast.error("Subject name must start with a capital letter.");
-            return;
-        }
-
-        const validStatuses = ["Solved", "Unsolved"];
-        if (!validStatuses.includes(paperUnsolved)) {
-            toast.error("Paper status must be either 'Solved' or 'Unsolved' (case-sensitive).");
-            return;
-        }
-
-        setIsUploading(true);
-        let thumbnail;
-
-        try {
-            const uploadedFileUrls = [];
-
-            for (const file of selectedFiles) {
-                if (file.size > 100 * 1024 * 1024) {
-                    toast.error("File too large! Must be under 100MB.");
-                    setIsUploading(false);
-                    return;
-                }
-
-                const data = new FormData();
-                data.append("file", file);
-                data.append("upload_preset", "upload");
-
-                const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
-                const uploadRes = await axios.post(uploadUrl, data);
-                const fileUrl = uploadRes.data.secure_url;
-                console.log("Files", fileUrl);
-                uploadedFileUrls.push(fileUrl);
-
-                const fileId = fileUrl.split('/upload/')[1].replace(/\.(pdf|mp4|jpg|png)$/, '');
-                thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
-            }
-
-            const payload = {
-                subjectName: subject,
-                courseCode: code,
-                year,
-                paperUnsolved,
-                universityName,
-                paperUpload: uploadedFileUrls,
-                paperThumbnail: thumbnail,
-            };
-
-            await axios.post("https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers", payload);
-            toast.success("Papers uploaded successfully!");
-            setSelectedFiles([]);
-        } catch (err) {
-            console.error("Upload error:", err);
-            toast.error("Error uploading papers");
-        } finally {
-            setIsUploading(false);
-        }
-    };
-
-
-
-
+        await axios.post("https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers", payload);
+        toast.success("Papers uploaded successfully!");
+        setSelectedFiles([]);
+    } catch (err) {
+        console.error("Upload error:", err);
+        toast.error("Error uploading papers");
+    } finally {
+        setIsUploading(false);
+    }
+};
 
 
     return (
