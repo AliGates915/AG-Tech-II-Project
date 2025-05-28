@@ -19,8 +19,8 @@ const PastPapers = () => {
   const fetchPapers = async (query = "") => {
     try {
       const url = query
-        ? `https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers/search?subjectName=${query}`
-        : `https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers`;
+        ? `https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers/search?subjectName=${query}`
+        : `https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers`;
       const res = await axios.get(url);
       setUploads(res.data.data);
       setCurrentPage(1);
