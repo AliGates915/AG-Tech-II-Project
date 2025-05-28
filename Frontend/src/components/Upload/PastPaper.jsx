@@ -93,7 +93,7 @@ function Paper() {
             paperThumbnail: thumbnail,
           };
       
-          await axios.post("https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers", payload);
+          await axios.post("https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers", payload);
       
           toast.success("Papers uploaded successfully!");
         //   setSubject("");
