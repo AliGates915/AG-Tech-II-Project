@@ -20,7 +20,7 @@ function Paper() {
             file.type === "application/pdf" || file.type.startsWith("image/")
         );
 
-
+       
         if (validFiles.length !== files.length) {
             toast.warn("Some files were skipped. Only PDF or image files allowed.");
         }
@@ -34,59 +34,56 @@ function Paper() {
         );
     };
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!subject.trim() || !code.trim() || !year.trim() || !universityName.trim() || !paperUnsolved.trim()) {
-        toast.error("Please fill all required fields (*)");
-        return;
-    }
-
-    if (!selectedFiles || selectedFiles.length === 0) {
-        toast.error("Please upload paper(s) (PDF or image).");
-        return;
-    }
-
-    if (isNaN(year)) {
-        toast.error("Year must be numbers only!");
-        return;
-    }
-
-    if (subject[0] !== subject[0].toUpperCase()) {
-        toast.error("Subject name must start with a capital letter.");
-        return;
-    }
-
-    const validStatuses = ["Solved", "Unsolved"];
-    if (!validStatuses.includes(paperUnsolved)) {
-        toast.error("Paper status must be either 'Solved' or 'Unsolved' (case-sensitive).");
-        return;
-    }
-
-    setIsUploading(true);
-    let thumbnail;
-
-    try {
-        const uploadedFileUrls = [];
-
-        for (const file of selectedFiles) {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+      
+        if (!subject.trim() || !code.trim() || !year.trim() || !universityName.trim() || !paperUnsolved.trim()) {
+          toast.error("Please fill all required fields (*)");
+          return;
+        }
+      
+        if (!selectedFiles || selectedFiles.length === 0) {
+          toast.error("Please upload paper(s) (PDF or image).");
+          return;
+        }
+      
+        if (isNaN(year)) {
+          toast.error("Year must be numbers only!");
+          return;
+        }
+      
+        setIsUploading(true);
+        let thumbnail;
+      
+        try {
+          const uploadedFileUrls = [];
+      
+          for (const file of selectedFiles) {
+            if (file.size > 100 * 1024 * 1024) {
+              toast.error("File too large! Must be under 100MB.");
+              setIsUploading(false);
+              return;
+            }
+      
             const data = new FormData();
             data.append("file", file);
-            data.append("upload_preset", "upload"); // Ensure this preset exists in your Cloudinary account
-
+            data.append("upload_preset", "upload");
+            
+      
             const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
+            
             const uploadRes = await axios.post(uploadUrl, data);
+            console.log("Upload response:", uploadRes.data);
+            
             const fileUrl = uploadRes.data.secure_url;
             uploadedFileUrls.push(fileUrl);
-
-            // Generate thumbnail from the first uploaded file only
-            if (!thumbnail) {
-                const fileId = fileUrl.split("/upload/")[1].split(".")[0];
-                thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
-            }
-        }
-
-        const payload = {
+      
+            // Optional: create a preview thumbnail (for image/pdf first page)
+            const fileId = fileUrl.split('/upload/')[1].replace(/\.(pdf|mp4|jpg|png)$/, '');
+            thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
+          }
+      
+          const payload = {
             subjectName: subject,
             courseCode: code,
             year,
@@ -94,34 +91,41 @@ const handleSubmit = async (e) => {
             universityName,
             paperUpload: uploadedFileUrls,
             paperThumbnail: thumbnail,
-        };
-
-        await axios.post("https://ag-tech-ii-project-backend.up.railway.app/api/pastPapers", payload);
-        toast.success("Papers uploaded successfully!");
-        setSelectedFiles([]);
-    } catch (err) {
-        console.error("Upload error:", err.response?.data || err.message);
-        toast.error("Error uploading papers");
-    } finally {
-        setIsUploading(false);
-    }
-};
-
-
+          };
+      
+          await axios.post("https://ag-tech-ii-project-x1sa.vercel.app/api/pastPapers", payload);
+      
+          toast.success("Papers uploaded successfully!");
+        //   setSubject("");
+        //   setCode("");
+        //   setYear("");
+          setSelectedFiles([]);
+        } catch (err) {
+          console.error("Upload error:", err);
+          toast.error("Error uploading papers");
+        } finally {
+          setIsUploading(false);
+        }
+      };
+      
+      
+      
+      
+      
 
     return (
         <>
-            {isUploading && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
-                    <div className="text-center">
+        {isUploading && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm">
+                        <div className="text-center">
                         <ClockLoader color="#328deb" size={100} speedMultiplier={1} />
                         <p className="mt-4 text-blue-600 text-lg font-semibold">
-
+                            
                         </p>
+                        </div>
                     </div>
-                </div>
-            )}
-
+                )}
+        
             <ToastContainer position="top-right" />
 
             <div className="flex justify-center">
@@ -162,26 +166,26 @@ const handleSubmit = async (e) => {
 
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">Paper Solved/Unsolved *</label>
-                    <input
-                        type="text"
-                        className="w-full border rounded px-3 py-2"
+                    <input 
+                        type="text" 
+                        className="w-full border rounded px-3 py-2" 
                         value={paperUnsolved}
                         onChange={(e) => setPaperUnsolved(e.target.value)}
                     />
                 </div>
-
+                
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-2">University Name *</label>
-                    <input
-                        type="text"
-                        className="w-full border rounded px-3 py-2"
+                    <input 
+                        type="text" 
+                        className="w-full border rounded px-3 py-2" 
                         value={universityName}
                         onChange={(e) => setUniversityName(e.target.value)}
                     />
                 </div>
 
-
-
+               
+                
                 <div className="mb-6">
                     <label className="block text-sm font-medium mb-2">Paper Upload *</label>
                     <label className=" w-full cursor-pointer inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
@@ -226,7 +230,7 @@ const handleSubmit = async (e) => {
 
                 <div className="flex justify-center">
                     <button type="submit" className="cursor-pointer px-6 py-2 rounded-full text-white bg-[#2563EB] hover:bg-blue-800">
-                        {isUploading ? "Uploading..." : "Upload Papers"}
+                    {isUploading ? "Uploading..." : "Upload Papers"}
                     </button>
                 </div>
             </form>
