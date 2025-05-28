@@ -84,6 +84,7 @@ function Paper() {
                 const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
                 const uploadRes = await axios.post(uploadUrl, data);
                 const fileUrl = uploadRes.data.secure_url;
+                console.log("Files", fileUrl);
                 uploadedFileUrls.push(fileUrl);
 
                 const fileId = fileUrl.split('/upload/')[1].replace(/\.(pdf|mp4|jpg|png)$/, '');
