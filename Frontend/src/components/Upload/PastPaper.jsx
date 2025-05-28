@@ -72,17 +72,19 @@ const handleSubmit = async (e) => {
         for (const file of selectedFiles) {
             const data = new FormData();
             data.append("file", file);
-            data.append("upload_preset", "upload");
+            data.append("upload_preset", "upload"); // Ensure this preset exists in your Cloudinary account
 
             const uploadUrl = "https://api.cloudinary.com/v1_1/daexycwc7/auto/upload";
             const uploadRes = await axios.post(uploadUrl, data);
             const fileUrl = uploadRes.data.secure_url;
             uploadedFileUrls.push(fileUrl);
-        }
 
-        // ✅ Fix applied here
-        const fileId = uploadedFileUrls[0].split('/upload/')[1].replace(/\.(pdf|mp4|jpg|png)$/, '');
-        thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
+            // Generate thumbnail from the first uploaded file only
+            if (!thumbnail) {
+                const fileId = fileUrl.split("/upload/")[1].split(".")[0];
+                thumbnail = `https://res.cloudinary.com/daexycwc7/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/${fileId}.jpg`;
+            }
+        }
 
         const payload = {
             subjectName: subject,
@@ -98,12 +100,13 @@ const handleSubmit = async (e) => {
         toast.success("Papers uploaded successfully!");
         setSelectedFiles([]);
     } catch (err) {
-        console.error("Upload error:", err);
+        console.error("Upload error:", err.response?.data || err.message);
         toast.error("Error uploading papers");
     } finally {
         setIsUploading(false);
     }
 };
+
 
 
     return (
